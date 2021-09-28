@@ -1,0 +1,24 @@
+{
+  "name": "raonair-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/mju-likelion/raonair-backend.git",
+  "author": "junseokieo <ccobaltbluee@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "nodemon app"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "express-session": "^1.17.2",
+    "morgan": "^1.10.0",
+    "mysql2": "^2.3.0",
+    "sequelize": "^6.6.5",
+    "sequelize-cli": "^6.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.13"
+  }
+}
