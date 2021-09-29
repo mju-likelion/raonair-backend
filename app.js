@@ -3,17 +3,17 @@ const path = require('path');
 const morgan = require('morgan');
 const http = require('http');
 
-//const { sequelize } =require('./models');
+const { sequelize } =require('./models');
 
 const app = express();
 app.set('port', process.env.PORT || 8000);
-// sequelize.sync({ force: false })
-//     .then(() => {
-//         console.log('데이터베이스 연결 성공');
-//     })
-//     .catch((err) => {
-//         console.log(err);
-//     });
+sequelize.sync({ force: false })
+    .then(() => {
+        console.log('데이터베이스 연결 성공');
+    })
+    .catch((err) => {
+        console.log(err);
+    });
 
 app.use(morgan('dev'));
 
