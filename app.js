@@ -3,14 +3,15 @@ const path = require('path');
 const morgan = require('morgan');
 const http = require('http');
 
-const { sequelize } = require('./models');
+const { sequelize, User } = require('./models');
 const user = require('./models/user');
-
+const authRouter = require('./api/auth');
+const { Router } = require('express');
 const app = express();
 
 app.set('port', process.env.PORT || 8000);
 
-sequelize.sync({ force: false })
+sequelize.sync({ force: true })
     .then(() => {
         console.log('데이터베이스 연결 성공');
     })
@@ -24,12 +25,21 @@ app.use(morgan('dev'));
 //     res.sendFile(path.join(__dirname, '/index.html'));
 //     //res.send('Hello World');
 // });
-app.get('/', (req, res, next) => {
-    user.create({
-        name: "fly",
-    });
-    console.log('입력 성공');
-})
+
+// app.get('/', (req, res, next) => {
+//     user.create({
+//         name: "fly",
+//         nickname: "yebin",
+//         email: "yebin@naver.com",
+//         password: "asdfasdf",
+//         emailConfirmed: "0",
+//     });
+//     console.log('입력 성공');
+// })
+
+
+app.use('/api/auth', authRouter);
+
 
 // 404 middleware
 app.use((req, res, next) => {
