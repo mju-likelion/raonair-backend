@@ -5,9 +5,9 @@ const http = require('http');
 
 const { sequelize, User } = require('./models');
 const user = require('./models/user');
-const authRouter = require('./api/auth');
 const { Router } = require('express');
 const app = express();
+const api = require('./api');
 
 app.set('port', process.env.PORT || 8000);
 
@@ -21,10 +21,6 @@ sequelize.sync({ force: true })
 
 app.use(morgan('dev'));
 
-// app.get('/', (req, res) => {
-//     res.sendFile(path.join(__dirname, '/index.html'));
-//     //res.send('Hello World');
-// });
 
 // app.get('/', (req, res, next) => {
 //     user.create({
@@ -37,8 +33,7 @@ app.use(morgan('dev'));
 //     console.log('입력 성공');
 // })
 
-
-app.use('/api/auth', authRouter);
+app.use('/api', api);
 
 
 // 404 middleware
