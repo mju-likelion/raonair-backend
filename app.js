@@ -33,6 +33,7 @@ app.use(morgan('dev'));
 //     console.log('입력 성공');
 // })
 
+app.use(express.json());
 app.use('/api', api);
 
 
