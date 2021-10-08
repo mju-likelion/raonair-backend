@@ -1,6 +1,7 @@
 const express = require('express');
 const User  = require('../models/user');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const auth = express.Router();
 
@@ -17,7 +18,7 @@ auth.post('/sign-up', async ( req, res, next ) => {
             nickname,
             email,
             password: hash,
-            emailConfirmed,
+            emailConfirmed: false,
         })
         res.send("성공");
     }
@@ -28,7 +29,43 @@ auth.post('/sign-up', async ( req, res, next ) => {
 }); 
 
 auth.post('/sign-in', async (req, res, next) => {
-    res.send("로그인");
+    const { email, password } = req.body;
+    const exUser = await User.findOne({ where: { email }});
+    if (!exUser){
+        return res.status(400).json({
+            message: '아이디가 존재하지 않습니다.',
+        });
+    }
+    const isEqualPw = await bcrypt.compare(password, exUser.password);
+    if (isEqualPw){
+        // 토큰 발급
+        try{
+            console.log(exUser.email);
+            console.log(exUser.nickname);
+            const token = jwt.sign({
+                email: exUser.email,
+                nickname: exUser.nickname,
+            }, process.env.JWT_SECRET, {
+                expiresIn: '10m',
+                issuer: 'raonair',
+            });
+            return res.status(200).json({
+                message: '로그인 성공!!',
+                token,
+            });
+        }
+        catch(error){
+            console.error(error);
+            return res.status(500).json({
+                code: 500,
+                message: '서버에러',
+            })
+        }
+    }else{
+        return res.status(404).json({
+            message: '로그인 실패!!',
+        });
+    }
 });
 
 module.exports = auth;

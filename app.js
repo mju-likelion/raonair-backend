@@ -8,6 +8,7 @@ const user = require('./models/user');
 const { Router } = require('express');
 const app = express();
 const api = require('./api');
+const dotenv = require('dotenv');
 
 app.set('port', process.env.PORT || 8000);
 
@@ -20,7 +21,7 @@ sequelize.sync({ force: true })
     });
 
 app.use(morgan('dev'));
-
+dotenv.config();
 
 // app.get('/', (req, res, next) => {
 //     user.create({
