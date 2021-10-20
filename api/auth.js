@@ -14,7 +14,6 @@ const auth = express.Router();
 
 //회원가입
 //이메일에 토큰 담긴 링크를 보내서 걔가 이메일 검증 라우터를 찌르도록.
-
 auth.post('/sign-up', async ( req, res, next ) => {
     const { name, nickname, email, password, emailConfirmed } = req.body;
     try{
@@ -62,7 +61,9 @@ auth.post('/sign-up', async ( req, res, next ) => {
                     to: email,                  // 메일 수신 주소
                     subject: "email-verify",    // 제목
                     // text: emailtoken,           // 텍스트 
-                    html: emailtoken,            // html body
+                    // html: emailtoken,            // html로 토큰만 보내기
+                    html: '<p>아래의 버튼을 클릭해주세요 !</p>' +
+                    "<a href='http://localhost:8000/api/auth/email-verify/"+ emailtoken +"'>인증하기</a>" //html로 인증 링크를 버튼으로 보내기
                 });
                 
                 console.log("5. 메일 보내기 성공");
@@ -85,8 +86,8 @@ auth.post('/sign-up', async ( req, res, next ) => {
 //이메일 인증
 //-> api에 토큰 넣기 o + email-confirmed 수정 o + 테이블 삭제 
 auth.post('/email-verify/:emailtoken', async (req, res, next) => {
-    const { emailtoken } = req.params; //수신자 메일로 보냈던 토큰을 파라미터로 받아옴
-    // const token = ; // 보관해놓은 토큰
+    const { emailtoken } = req.params; //수신자 메일로 보냈던 토큰을 파라미터로 받아옴(사용자)
+    // const token = ; // 보관해놓은 토큰, 현재는 req.body에서 토큰을 받아옴(운영자)
     const { email, token } = req.body;
     console.log(emailtoken);
     console.log(email);
@@ -107,6 +108,7 @@ auth.post('/email-verify/:emailtoken', async (req, res, next) => {
     await User.destroy({
         where: { email: email },
     });
+    console.log("디비에 로우 삭제 완료");
     return res.status(410).json({
         message: "유효하지 않은 토큰 : 이메일 인증 실패"
     });
@@ -180,8 +182,8 @@ auth.post('/search-pw', async (req, res, next) => {
                 from: "ypd06021@naver.com",     // 메일 발신 주소
                 to: email,                      //메일 수신 주소
                 subject: "라온에어 비밀번호 찾기",    // 제목
-                // text: emailtoken,            // 텍스트
-                html: exUser.password,          // html body
+                html: '<p>아래의 버튼을 클릭해주세요 !</p>' +
+                    "<a href='http://localhost:8000/api/auth/reset-pw'>인증하기</a>" //html로 인증 링크를 버튼으로 보내기
             });
 
             console.log("메일로 비밀번호 보내기 성공");
@@ -197,7 +199,7 @@ auth.post('/search-pw', async (req, res, next) => {
 });
 
 
-//비밀번호 초기화 !
+//비밀번호 초기화
 //이메일이 일치하는 디비의 비밀번호 칸을 입력받은 비밀번호로 업데이트 : req.body로 이메일 받아오는게 맞는지.
 auth.post('/reset-pw', async (req, res, next) => {
     const { name, nickname, email, password } = req.body;
@@ -222,7 +224,7 @@ module.exports = auth;
 
 
 /* 수정사항
-1. 회원가입 : 토큰을 이메일검증 찌르는 '링크'로 보내기 
+1. 회원가입 : 토큰을 이메일검증 찌르는 '링크'로 보내기 o -> get, post 차이 ???
 2. 이메일샌드 : 메일 발신 주소 그대로 냅둬야하나 ?
 3. 이메일검증 : 발행할 토큰 Redis에 보관, 꺼내오기?  + 테이블 삭제
 4. 로그인 : -
