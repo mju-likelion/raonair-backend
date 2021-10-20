@@ -14,7 +14,7 @@ app.set('port', process.env.PORT || 8000);
 
 sequelize.sync({ force: true })
     .then(() => {
-        console.log('데이터베이스 연결 성공');
+        console.log('디비연결완료 : app.js에서 시퀄라이즈로 연결');
     })
     .catch((err) => {
         console.log(err);
