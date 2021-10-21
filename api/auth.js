@@ -59,11 +59,11 @@ auth.post('/sign-up', async ( req, res, next ) => {
                 const emailSend = await transporter.sendMail({
                     from: "ypd06021@naver.com", // 메일 발신 주소
                     to: email,                  // 메일 수신 주소
-                    subject: "email-verify",    // 제목
+                    subject: "라온에어 이메일 인증",    // 제목
                     // text: emailtoken,           // 텍스트 
                     // html: emailtoken,            // html로 토큰만 보내기
                     html: '<p>아래의 버튼을 클릭해주세요 !</p>' +
-                    "<a href='http://localhost:8000/api/auth/email-verify/"+ emailtoken +"'>인증하기</a>" //html로 인증 링크를 버튼으로 보내기
+                    "<a href='http://localhost:8000/api/auth/email-verify/"+ emailtoken +"'>인증하기</a>" //html로 이메일인증 링크 보내기
                 });
                 
                 console.log("5. 메일 보내기 성공");
@@ -97,7 +97,7 @@ auth.post('/email-verify/:emailtoken', async (req, res, next) => {
         await User.update({
             emailConfirmed: "1",
         }, {
-            where: { email: email},
+            where: { email: email },
         });
         return res.status(200).json({
             message: '이메일 인증 성공!'
@@ -157,16 +157,21 @@ auth.post('/sign-in', async (req, res, next) => {
 });
 
 
-//비밀번호 찾기 -> 일단 비밀번호 이메일로 보내주는거 구현, 이후 이메일에서 링크 누르면 비밀번호 재설정할 수 있게 ?
+//비밀번호 찾기
+//디비에 존재하는 이메일이면 메일로 비밀번호재설정하는 링크보내기 ㅇ
+//이메일을 req.body/params로 받아와야하는지 ?
 auth.post('/search-pw', async (req, res, next) => {
     const { email } = req.body;
     const exUser = await User.findOne({ where: { email }});
-
-    async function main(email) {
-
-        console.log("이메일 샌드 함수 들어옴");
+    if (!exUser){
+        return res.status(400).json({
+            message: '가입하지 않은 아이디입니다.',
+        });
+    }
+    //이메일 존재하면 비밀번호 변경 메일 발송
+    // async function main(email) {
+    //main 함수 없어도 코드 실행되는데 꼭 있어야하는건지 ? if문 때문에 else처리로 없어도 된다고 생각하긴하는데 노드메일러에서는 함수로 감쌌음
         try {
-            console.log("트라이 들어옴");
             const transporter = nodemailer.createTransport({
                 service: 'naver',
                 host: 'smtp.naver.com',
@@ -176,33 +181,32 @@ auth.post('/search-pw', async (req, res, next) => {
                 pass: process.env.MAIL_PASSWORD
                 }
             });
-            console.log("transporter까진 정상");
-
             const emailSend = await transporter.sendMail({
                 from: "ypd06021@naver.com",     // 메일 발신 주소
                 to: email,                      //메일 수신 주소
                 subject: "라온에어 비밀번호 찾기",    // 제목
                 html: '<p>아래의 버튼을 클릭해주세요 !</p>' +
-                    "<a href='http://localhost:8000/api/auth/reset-pw'>인증하기</a>" //html로 인증 링크를 버튼으로 보내기
+                "<a href='http://localhost:8000/api/auth/reset-pw'>비밀번호 변경하기</a>" //비밀번호 변경 링크 보내기
             });
 
-            console.log("메일로 비밀번호 보내기 성공");
-            res.send(exUser.password);
+            console.log("메일로 비밀번호 재설정 링크 보내기 성공");
             return res.status(200).json({
-                message: '메일로 비밀번호 보내기 성공',
+                message: '메일로 비밀번호 재설정 링크 보내기 성공',
             });
         } catch (error) {
-            console.log("가입한 적 없거나 올바르지 않은 이메일 주소입니다.");
+            console.log("올바르지 않은 이메일 주소입니다.");
+            return next(error);
         }
-    };
-    main();
+    // };
+    // main();
 });
 
 
 //비밀번호 초기화
-//이메일이 일치하는 디비의 비밀번호 칸을 입력받은 비밀번호로 업데이트 : req.body로 이메일 받아오는게 맞는지.
+//이메일이 일치하는 디비의 비밀번호 칸을 입력받아서 암호화한 비밀번호로 업데이트 ㅇ
+//이메일을 req.body/params로 받아와야하는지 ? 비밀번호를 입력받아야해서 post랑 req.body 사용해야하긴함
 auth.post('/reset-pw', async (req, res, next) => {
-    const { name, nickname, email, password } = req.body;
+    const { email, password } = req.body;
     try{
         const resetpw = await bcrypt.hash(password, 15);
         await User.update({
@@ -224,10 +228,10 @@ module.exports = auth;
 
 
 /* 수정사항
-1. 회원가입 : 토큰을 이메일검증 찌르는 '링크'로 보내기 o -> get, post 차이 ???
-2. 이메일샌드 : 메일 발신 주소 그대로 냅둬야하나 ?
-3. 이메일검증 : 발행할 토큰 Redis에 보관, 꺼내오기?  + 테이블 삭제
-4. 로그인 : -
-5. 비밀번호 찾기 : 비밀번호재설정 찌르는 링크로 보내기 
+1. 회원가입 : - 토큰을 이메일검증 찌르는 '링크'로 보내기 o -> get, post 차이 ???
+2. 이메일샌드 : - 메일 발신 주소 그대로 냅둬야하나 ?
+3. 이메일검증 : 발행할 토큰 Redis에 보관, 꺼내오기?  + 테이블 삭제 ? -> 데이터 삭제하고 다시 회원가입 !
+4. 로그인 : ㅇ
+5. 비밀번호 찾기 : 비밀번호재설정 찌르는 링크로 보내기 ㅇ
 6. 비밀번호 재설정 : 디비에 담긴 비밀번호 로우만 테이블 수정 o
 */
