@@ -8,6 +8,7 @@ const { isNativeError } = require('util/types');
 const { getMaxListeners } = require('process');
 const dotenv = require('dotenv');
 const { token } = require('morgan');
+const redis = require("redis");
 
 
 const auth = express.Router();
@@ -230,7 +231,7 @@ module.exports = auth;
 /* 수정사항
 1. 회원가입 : - 토큰을 이메일검증 찌르는 '링크'로 보내기 o -> get, post 차이 ???
 2. 이메일샌드 : - 메일 발신 주소 그대로 냅둬야하나 ?
-3. 이메일검증 : 발행할 토큰 Redis에 보관, 꺼내오기?  + 테이블 삭제 ? -> 데이터 삭제하고 다시 회원가입 !
+3. 이메일검증 : 발행할 토큰 Redis에 보관, 꺼내오기?  + 테이블 삭제 ㅇ -> 데이터 삭제하고 다시 회원가입 ㅇ
 4. 로그인 : ㅇ
 5. 비밀번호 찾기 : 비밀번호재설정 찌르는 링크로 보내기 ㅇ
 6. 비밀번호 재설정 : 디비에 담긴 비밀번호 로우만 테이블 수정 o
