@@ -9,6 +9,12 @@ const { getMaxListeners } = require('process');
 const dotenv = require('dotenv');
 const { token } = require('morgan');
 const redis = require("redis");
+const redisClient = redis.createClient({
+    host : "127.0.0.1",
+    port : 6379,
+    db : 0,
+    // password:""
+});
 
 
 const auth = express.Router();
@@ -39,6 +45,13 @@ auth.post('/sign-up', async ( req, res, next ) => {
         //토큰 발행
         const emailtoken = crypto.randomBytes(20).toString("hex");
         console.log("2. 토큰 발행 : " + emailtoken);
+        
+        //토큰 redis에 저장
+        redisClient.setex(email, 50, emailtoken); // 소멸시간 설정
+        //redis에 토큰 잘 들어갔는지 확인
+        redisClient.get(email, function(err, redistoken) {
+            console.log("redis에 저장된 토큰은" + redistoken);
+        });
 
         //이메일 샌드 로직 -> 파라미터로 받아온 이메일로 샌드, 파라미터에 왜 email이면 오류고 emailtoken이면 성공인거지 ? 아악
         async function main() {
@@ -85,34 +98,43 @@ auth.post('/sign-up', async ( req, res, next ) => {
 
 
 //이메일 인증
-//-> api에 토큰 넣기 o + email-confirmed 수정 o + 테이블 삭제 
 auth.post('/email-verify/:emailtoken', async (req, res, next) => {
     const { emailtoken } = req.params; //수신자 메일로 보냈던 토큰을 파라미터로 받아옴(사용자)
-    // const token = ; // 보관해놓은 토큰, 현재는 req.body에서 토큰을 받아옴(운영자)
-    const { email, token } = req.body;
-    console.log(emailtoken);
-    console.log(email);
-    if( emailtoken == token )
-    {
-        // 토큰이 일치하면 email-confirmed 1로 변경
-        await User.update({
-            emailConfirmed: "1",
-        }, {
-            where: { email: email },
-        });
-        return res.status(200).json({
-            message: '이메일 인증 성공!'
-        });
-    }
-    //이메일 인증 실패 -> 회원가입 때 입력받은 테이블 로우 전체 삭제 ?
-    console.log("토큰다름, 디비 로우 삭제해야함");
-    await User.destroy({
-        where: { email: email },
-    });
-    console.log("디비에 로우 삭제 완료");
-    return res.status(410).json({
-        message: "유효하지 않은 토큰 : 이메일 인증 실패"
-    });
+    const { email } = req.body;
+    
+    // 받아온 이메일, 보낸 토큰, 보관 토큰 확인
+    console.log("이메일:" + email + "보낸 토큰:" + emailtoken);
+    redisClient.get(email, function(err, redistoken) {
+        console.log("redis 토근은" + redistoken);
+    });;
+
+    const exUser = await User.findOne({ where: { email }});
+
+    redisClient.get(email, function (err,redistoken) {
+        if(err) throw err;
+        
+        // 인증성공 : 디비에 사용자 정보 존재 + 보관한 토큰이 not null + 보관한 토큰과 발급한 토큰이 같으면
+        if( redistoken !== null && emailtoken == redistoken && exUser) {
+            console.log("이메일토큰:" + emailtoken + "보관토큰" + redistoken)
+            User.update({  //await 지워도 되나 ..?
+                emailConfirmed: "1",
+            }, {
+                where: { email: email },
+            });
+            return res.status(200).json({
+                message: '이메일 인증 성공!'
+            });
+        } else {
+            console.log("토큰다름, 디비 로우 삭제해야함");
+            User.destroy({  //await 지워도 되나 ..?
+                where: { email: email },
+            });
+            console.log("디비에 로우 삭제 완료");
+            return res.status(410).json({
+                message: "유효하지 않은 토큰 : 이메일 인증 실패"
+            });
+        }
+    })
 });
 
 
@@ -170,8 +192,7 @@ auth.post('/search-pw', async (req, res, next) => {
         });
     }
     //이메일 존재하면 비밀번호 변경 메일 발송
-    // async function main(email) {
-    //main 함수 없어도 코드 실행되는데 꼭 있어야하는건지 ? if문 때문에 else처리로 없어도 된다고 생각하긴하는데 노드메일러에서는 함수로 감쌌음
+    // async function main(email) { -> main 함수 없어도 코드 실행되는데 꼭 있어야하는건지 ? if문 때문에 else처리로 없어도 된다고 생각하긴하는데 노드메일러에서는 함수로 감쌌음
         try {
             const transporter = nodemailer.createTransport({
                 service: 'naver',
@@ -199,9 +220,7 @@ auth.post('/search-pw', async (req, res, next) => {
             return next(error);
         }
     // };
-    // main();
 });
-
 
 //비밀번호 초기화
 //이메일이 일치하는 디비의 비밀번호 칸을 입력받아서 암호화한 비밀번호로 업데이트 ㅇ
@@ -222,17 +241,4 @@ auth.post('/reset-pw', async (req, res, next) => {
     }
 });
 
-
 module.exports = auth;
-
-
-
-
-/* 수정사항
-1. 회원가입 : - 토큰을 이메일검증 찌르는 '링크'로 보내기 o -> get, post 차이 ???
-2. 이메일샌드 : - 메일 발신 주소 그대로 냅둬야하나 ?
-3. 이메일검증 : 발행할 토큰 Redis에 보관, 꺼내오기?  + 테이블 삭제 ㅇ -> 데이터 삭제하고 다시 회원가입 ㅇ
-4. 로그인 : ㅇ
-5. 비밀번호 찾기 : 비밀번호재설정 찌르는 링크로 보내기 ㅇ
-6. 비밀번호 재설정 : 디비에 담긴 비밀번호 로우만 테이블 수정 o
-*/
