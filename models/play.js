@@ -65,6 +65,8 @@ module.exports = class Play extends Sequelize.Model{
         });
     }
     static associate(db){
-        db.Play.belongsTo(db.Troupe, { foriegnKey: 'troupe', targetKey: 'id'});
+        db.Play.belongsTo(db.Troupe, { foreignKey: 'troupe', targetKey: 'id'});
+        db.Play.hasMany(db.Star, {foreignKey: 'play', sourceKey: 'id' });
+        // db.Play.hasMany(db.Commnet, {foreignKey: 'play', sourceKey: 'id' });
     }
 };

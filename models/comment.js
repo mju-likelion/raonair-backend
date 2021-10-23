@@ -1,10 +1,10 @@
 const {Sequelize} = require("sequelize");
 
-module.exports = class Star extends Sequelize.Model {
+module.exports = class Comment extends Sequelize.Model {
     static init(sequelize){
         return super.init({
-            star: {
-                type: Sequelize.INTEGER(10),
+            comment: {
+                type: Sequelize.STRING(200),
                 allowNull: false,
             },
         }, {
@@ -12,14 +12,14 @@ module.exports = class Star extends Sequelize.Model {
             timestamps: true,
             underscored: false,
             paranoid: true,
-            modelName: 'star',
-            tableName: 'stars',
+            modelName: 'comment',
+            tableName: 'comments',
             charset: 'utf8mb4',
             collate: 'utf8mb4_general_ci',
         });
     }
     static associate(db){
-        db.Star.belongsTo(db.User, { foreignKey: 'users', targetKey: 'id' });
-        db.Star.belongsTo(db.Play, { foreignKey: 'play', targetKey: 'id'});
+        db.Comment.belongsTo(db.User, { foreignKey: 'users', targetKey: 'id' });
+        db.Comment.belongsTo(db.Play, { foreignKey: 'play', targetKey: 'id'});
     }
 };
