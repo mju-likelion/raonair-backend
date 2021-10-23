@@ -4,7 +4,7 @@ module.exports = class Star extends Sequelize.Model {
     static init(sequelize){
         return super.init({
             star: {
-                type: Sequelize.STRING(200),
+                type: Sequelize.INTEGER(10),
                 allowNull: false,
             },
         }, {
