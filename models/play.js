@@ -35,7 +35,7 @@ module.exports = class Play extends Sequelize.Model{
                 allowNull: false,
             },
             theater: {
-                type: Sequelize.INTEGER,
+                type: Sequelize.STRING(20),
                 allowNull: false,
             },
             yes24_external_link: {
