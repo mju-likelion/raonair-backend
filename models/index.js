@@ -8,6 +8,7 @@ const Staff = require('./staff');
 const Theater = require('./theater');
 const Role = require('./role');
 const Person = require('./person');
+const Like = require('./like');
 
 const env = process.env.NODE_ENV || 'development';
 const config = require('../config/config.json')[env];
@@ -27,6 +28,7 @@ db.Staff = Staff;
 db.Theater = Theater;
 db.Role = Role;
 db.Person = Person;
+db.Like = Like;
 
 User.init(sequelize);
 Troupe.init(sequelize);
@@ -37,6 +39,7 @@ Staff.init(sequelize);
 Theater.init(sequelize);
 Role.init(sequelize);
 Person.init(sequelize);
+Like.init(sequelize);
 
 User.associate(db);
 Troupe.associate(db);
@@ -47,5 +50,6 @@ Staff.associate(db);
 Theater.associate(db);
 Role.associate(db);
 Person.associate(db);
+Like.associate(db);
 
 module.exports = db;

@@ -7,6 +7,14 @@ module.exports = class Star extends Sequelize.Model {
                 type: Sequelize.INTEGER(10),
                 allowNull: false,
             },
+            play: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+            },
+            star_user: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+            }
         }, {
             sequelize,
             timestamps: false,
@@ -19,7 +27,7 @@ module.exports = class Star extends Sequelize.Model {
         });
     }
     static associate(db){
-        db.Star.belongsTo(db.User, { foreignKey: 'users', targetKey: 'id' });
+        db.Star.belongsTo(db.User, { foreignKey: 'star_user', targetKey: 'id' });
         db.Star.belongsTo(db.Play, { foreignKey: 'play', targetKey: 'id'});
     }
 };
