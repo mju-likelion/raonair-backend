@@ -7,6 +7,14 @@ module.exports = class Comment extends Sequelize.Model {
                 type: Sequelize.STRING(200),
                 allowNull: false,
             },
+            play: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+            },
+            comment_user: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+            },
         }, {
             sequelize,
             timestamps: true,
@@ -19,7 +27,7 @@ module.exports = class Comment extends Sequelize.Model {
         });
     }
     static associate(db){
-        db.Comment.belongsTo(db.User, { foreignKey: 'users', targetKey: 'id' });
+        db.Comment.belongsTo(db.User, { foreignKey: 'comment_user', targetKey: 'id' });
         db.Comment.belongsTo(db.Play, { foreignKey: 'play', targetKey: 'id'});
     }
 };
