@@ -9,6 +9,9 @@ const Theater = require('./theater');
 const Role = require('./role');
 const Person = require('./person');
 const Like = require('./like');
+const Team = require('/.team');
+const Rating = require('./rating');
+const Troupe_like = require('./troupe_like');
 
 const env = process.env.NODE_ENV || 'development';
 const config = require('../config/config.json')[env];
@@ -29,6 +32,9 @@ db.Theater = Theater;
 db.Role = Role;
 db.Person = Person;
 db.Like = Like;
+db.Team = Team;
+db.Rating = Rating;
+db.troupe_like = Troupe_like;
 
 User.init(sequelize);
 Troupe.init(sequelize);
@@ -40,6 +46,9 @@ Theater.init(sequelize);
 Role.init(sequelize);
 Person.init(sequelize);
 Like.init(sequelize);
+Team.init(sequelize);
+Rating.init(sequelize);
+Troupe_like(sequelize);
 
 User.associate(db);
 Troupe.associate(db);
@@ -51,5 +60,8 @@ Theater.associate(db);
 Role.associate(db);
 Person.associate(db);
 Like.associate(db);
+Team.associate(db);
+Rating.associate(db);
+Troupe_like.associate(db);
 
 module.exports = db;
