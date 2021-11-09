@@ -16,6 +16,6 @@ module.exports = class Staff extends Sequelize.Model {
     }
     static associate(db){
         // db.Staff.belongsTo(db.Person, { foreignKey: 'person', targetKey: 'id' });
-        db.Staff.belongsTo(db.Play, { foreignKey: 'play', targetKey: 'id'});
+        // db.Staff.belongsTo(db.Play, { foreignKey: 'play', targetKey: 'id'});
     }
 };

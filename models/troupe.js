@@ -29,6 +29,6 @@ module.exports = class Troupe extends Sequelize.Model {
     }
 
     static associate(db){
-        db.Troupe.hasMany(db.Play, {foreignKey: 'troupe', sourceKey: 'id' });
+        // db.Troupe.hasMany(db.Play, {foreignKey: 'troupe', sourceKey: 'id' });
     }
 };

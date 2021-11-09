@@ -19,6 +19,6 @@ module.exports = class Person extends Sequelize.Model {
         });
     }
     static associate(db){
-        db.Person.hasMany(db.Role, { foreignKey: 'person_id', targetKey: 'id' });
+        // db.Person.hasMany(db.Role, { foreignKey: 'person_id', targetKey: 'id' });
     }
 };

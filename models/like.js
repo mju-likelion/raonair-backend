@@ -22,7 +22,7 @@ module.exports = class Like extends Sequelize.Model {
         });
     }
     static associate(db){
-        db.Like.belongsTo(db.Play, { foreignKey: 'play', targetKey: 'id'});
-        db.Like.belongsTo(db.User, { foreignKey: 'like_user', targetKey: 'id'});
+        // db.Like.belongsTo(db.Play, { foreignKey: 'play', targetKey: 'id'});
+        // db.Like.belongsTo(db.User, { foreignKey: 'like_user', targetKey: 'id'});
     }
 };

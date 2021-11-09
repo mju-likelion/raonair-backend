@@ -27,7 +27,7 @@ module.exports = class Star extends Sequelize.Model {
         });
     }
     static associate(db){
-        db.Star.belongsTo(db.User, { foreignKey: 'star_user', targetKey: 'id' });
-        db.Star.belongsTo(db.Play, { foreignKey: 'play', targetKey: 'id'});
+        // db.Star.belongsTo(db.User, { foreignKey: 'star_user', targetKey: 'id' });
+        // db.Star.belongsTo(db.Play, { foreignKey: 'play', targetKey: 'id'});
     }
 };

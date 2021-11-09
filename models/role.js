@@ -20,6 +20,6 @@ module.exports = class Role extends Sequelize.Model {
         });
     }
     static associate(db){
-        db.Role.belongsTo(db.Person, { foreignKey: 'person_id', targetKey: 'id' });
+        // db.Role.belongsTo(db.Person, { foreignKey: 'person_id', targetKey: 'id' });
     }
 };

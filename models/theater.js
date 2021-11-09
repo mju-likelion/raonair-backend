@@ -31,6 +31,6 @@ module.exports = class Theater extends Sequelize.Model {
         });
     }
     static associate(db){
-        db.Theater.hasMany(db.Play, { foreignKey: 'theater', sourceKey: 'id'})
+        // db.Theater.hasMany(db.Play, { foreignKey: 'theater', sourceKey: 'id'})
     }
 };
