@@ -13,13 +13,13 @@ module.exports = class Role extends Sequelize.Model {
             timestamps: false,
             underscored: false,
             paranoid: false,
-            modelName: 'role',
+            modelName: 'Role',
             tableName: 'roles',
             charset: 'utf8mb4',
             collate: 'utf8mb4_general_ci',
         });
     }
     static associate(db){
-        // db.Role.belongsTo(db.Person, { foreignKey: 'person_id', targetKey: 'id' });
+        db.Role.belongsTo(db.Person, { foreignKey: 'person_id', targetKey: 'id' });
     }
 };

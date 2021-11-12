@@ -3,14 +3,6 @@ const { Sequelize } = require("sequelize");
 module.exports = class Like extends Sequelize.Model {
     static init(sequelize){
         return super.init({
-            play: {
-                type: Sequelize.INTEGER,
-                allowNull: false,
-            },
-            like_user: {
-                type: Sequelize.INTEGER,
-                allowNull: false,
-            },
         }, {
             sequelize,
             timestamps: false,
@@ -22,7 +14,7 @@ module.exports = class Like extends Sequelize.Model {
         });
     }
     static associate(db){
-        // db.Like.belongsTo(db.Play, { foreignKey: 'play', targetKey: 'id'});
-        // db.Like.belongsTo(db.User, { foreignKey: 'like_user', targetKey: 'id'});
+        db.Like.belongsTo(db.Play, { foreignKey: 'play', targetKey: 'id'});
+        db.Like.belongsTo(db.User, { foreignKey: 'user', targetKey: 'id'});
     }
 };

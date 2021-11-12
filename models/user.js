@@ -30,15 +30,16 @@ module.exports = class User extends Sequelize.Model {
             timestamps: true,
             underscored: false,
             paranoid: true,
-            modelName: 'user',
+            modelName: 'User',
             tableName: 'users',
             charset: 'utf8mb4',
             collate: 'utf8mb4_general_ci',
         });
     }
     static associate(db){
-        // db.User.hasMany(db.Star, { foreignKey: 'star_user', sourceKey: 'id' });
-        // db.User.hasMany(db.Comment, { foreignKey: 'comment_user', sourceKey: 'id' });
-        // db.User.hasMany(db.Like, { foreignKey: 'like_user', sourceKey: 'id' })
+        db.User.hasMany(db.Star, { foreignKey: 'user', sourceKey: 'id' });
+        db.User.hasMany(db.Comment, { foreignKey: 'user', sourceKey: 'id' });
+        db.User.hasMany(db.Like, { foreignKey: 'user', sourceKey: 'id' })
+        db.User.hasMany(db.Troupe_like, { foreignKey: 'user', sourceKey: 'id' })
     }
 };

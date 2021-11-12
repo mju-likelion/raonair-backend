@@ -12,13 +12,15 @@ module.exports = class Person extends Sequelize.Model {
             timestamps: false,
             underscored: false,
             paranoid: false,
-            modelName: 'person',
+            modelName: 'Person',
             tableName: 'persons',
             charset: 'utf8mb4',
             collate: 'utf8mb4_general_ci',
         });
     }
     static associate(db){
-        // db.Person.hasMany(db.Role, { foreignKey: 'person_id', targetKey: 'id' });
+        db.Person.hasMany(db.Role, { foreignKey: 'person_id', targetKey: 'id' });
+        db.Person.belongsToMany(db.Play, { through: 'staffs' });
+        db.Person.belongsToMany(db.Troupe, { through: 'teams' });
     }
 };

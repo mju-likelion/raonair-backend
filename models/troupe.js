@@ -8,7 +8,7 @@ module.exports = class Troupe extends Sequelize.Model {
                 allowNull: false,
                 unique: true,
             },
-            troupe_type: {
+            type: {
                 type: Sequelize.ENUM('student', 'normal'),
                 allowNull: false,
             },
@@ -18,7 +18,7 @@ module.exports = class Troupe extends Sequelize.Model {
             },
         }, {
             sequelize,
-            timestamps: true,
+            timestamps: false,
             underscored: false,
             modelName: 'Troupe',
             tableName: 'troupes',
@@ -29,6 +29,8 @@ module.exports = class Troupe extends Sequelize.Model {
     }
 
     static associate(db){
-        // db.Troupe.hasMany(db.Play, {foreignKey: 'troupe', sourceKey: 'id' });
+        db.Troupe.hasMany(db.Troupe_like, { foreignKey: 'troupe', sourceKey: 'id' });
+        db.Troupe.hasMany(db.Play, { foreignKey: 'troupe', sourceKey: 'id' });
+        db.Troupe.belongsToMany(db.Person, { through: 'teams' });
     }
 };

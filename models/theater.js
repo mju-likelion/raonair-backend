@@ -24,13 +24,13 @@ module.exports = class Theater extends Sequelize.Model {
             timestamps: true,
             underscored: false,
             paranoid: true,
-            modelName: 'theater',
+            modelName: 'Theater',
             tableName: 'theaters',
             charset: 'utf8mb4',
             collate: 'utf8mb4_general_ci',
         });
     }
     static associate(db){
-        // db.Theater.hasMany(db.Play, { foreignKey: 'theater', sourceKey: 'id'})
+        db.Theater.hasMany(db.Play, { foreignKey: 'theater', sourceKey: 'id'})
     }
 };

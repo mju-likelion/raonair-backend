@@ -34,10 +34,6 @@ module.exports = class Play extends Sequelize.Model{
                 type: Sequelize.INTEGER,
                 allowNull: false,
             },
-            theater: {
-                type: Sequelize.STRING(20),
-                allowNull: false,
-            },
             yes24_external_link: {
                 type: Sequelize.STRING(100),
                 unique: true,
@@ -65,8 +61,11 @@ module.exports = class Play extends Sequelize.Model{
         });
     }
     static associate(db){
-        // db.Play.belongsTo(db.Troupe, { foreignKey: 'troupe', targetKey: 'id'});
-        // db.Play.hasMany(db.Star, {foreignKey: 'play', sourceKey: 'id' });
-        // db.Play.hasMany(db.Comment, {foreignKey: 'play', sourceKey: 'id' });
+        db.Play.belongsTo(db.Troupe, { foreignKey: 'troupe', targetKey: 'id'});
+        db.Play.hasMany(db.Star, { foreignKey: 'play', sourceKey: 'id' });
+        db.Play.hasMany(db.Comment, { foreignKey: 'play', sourceKey: 'id' });
+        db.Play.hasMany(db.Like, { foreignKey: 'play', sourceKey: 'id' });
+        db.Play.belongsToMany(db.Person, { through: 'staffs' });
+        db.Play.belongsTo(db.Theater, { foreignKey: 'theater', targetKey: 'id' });
     }
 };
