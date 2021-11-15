@@ -9,6 +9,7 @@ const { getMaxListeners } = require('process');
 const dotenv = require('dotenv');
 const { token } = require('morgan');
 const redis = require("redis");
+const emailsendhtml = require('../templates/emailsend')
 const redisClient = redis.createClient({
     host : "127.0.0.1",
     port : 6379,
@@ -53,7 +54,6 @@ auth.post('/sign-up', async ( req, res, next ) => {
             console.log("redis에 저장된 토큰은" + redistoken);
         });
 
-        //이메일 샌드 로직 -> 파라미터로 받아온 이메일로 샌드, 파라미터에 왜 email이면 오류고 emailtoken이면 성공인거지 ? 아악
         async function main() {
             console.log("3. 이메일 샌드 함수 들어옴");
 
@@ -71,17 +71,17 @@ auth.post('/sign-up', async ( req, res, next ) => {
                 console.log("4. transporter까진 정상");
 
                 const emailSend = await transporter.sendMail({
-                    from: "ypd06021@naver.com", // 메일 발신 주소
+                    from: process.env.MAIL_EMAIL, // 메일 발신 주소
                     to: email,                  // 메일 수신 주소
                     subject: "라온에어 이메일 인증",    // 제목
                     // text: emailtoken,           // 텍스트 
                     // html: emailtoken,            // html로 토큰만 보내기
-                    html: '<p>아래의 버튼을 클릭해주세요 !</p>' +
-                    "<a href='http://localhost:8000/api/auth/email-verify/"+ emailtoken +"'>인증하기</a>" //html로 이메일인증 링크 보내기
+                    html: emailsendhtml //html로 이메일인증 링크 보내기
                 });
-                
+                return res.status(200).json({
+                    message: '이메일 보내기 성공!'
+                });
                 console.log("5. 메일 보내기 성공");
-                res.send("회원가입 끝 메일 검증해야함 (디비생성하고 메일 보내기 성공)");
             } catch (error) {
                 console.log("이메일인증실패");
             }
@@ -116,7 +116,7 @@ auth.post('/email-verify/:emailtoken', async (req, res, next) => {
         // 인증성공 : 디비에 사용자 정보 존재 + 보관한 토큰이 not null + 보관한 토큰과 발급한 토큰이 같으면
         if( redistoken !== null && emailtoken == redistoken && exUser) {
             console.log("이메일토큰:" + emailtoken + "보관토큰" + redistoken)
-            User.update({  //await 지워도 되나 ..?
+            User.update({  
                 emailConfirmed: "1",
             }, {
                 where: { email: email },
@@ -126,7 +126,7 @@ auth.post('/email-verify/:emailtoken', async (req, res, next) => {
             });
         } else {
             console.log("토큰다름, 디비 로우 삭제해야함");
-            User.destroy({  //await 지워도 되나 ..?
+            User.destroy({  
                 where: { email: email },
             });
             console.log("디비에 로우 삭제 완료");
@@ -183,7 +183,7 @@ auth.post('/sign-in', async (req, res, next) => {
 //비밀번호 찾기
 //디비에 존재하는 이메일이면 메일로 비밀번호재설정하는 링크보내기 ㅇ
 //이메일을 req.body/params로 받아와야하는지 ?
-auth.post('/search-pw', async (req, res, next) => {
+auth.post('/find-password/user/:userid', async (req, res, next) => {
     const { email } = req.body;
     const exUser = await User.findOne({ where: { email }});
     if (!exUser){
@@ -225,7 +225,7 @@ auth.post('/search-pw', async (req, res, next) => {
 //비밀번호 초기화
 //이메일이 일치하는 디비의 비밀번호 칸을 입력받아서 암호화한 비밀번호로 업데이트 ㅇ
 //이메일을 req.body/params로 받아와야하는지 ? 비밀번호를 입력받아야해서 post랑 req.body 사용해야하긴함
-auth.post('/reset-pw', async (req, res, next) => {
+auth.post('/reset-password', async (req, res, next) => {
     const { email, password } = req.body;
     try{
         const resetpw = await bcrypt.hash(password, 15);
