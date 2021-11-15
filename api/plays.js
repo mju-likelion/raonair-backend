@@ -7,7 +7,7 @@ plays.post('/:id', (req, res, next) => {
     const { title, start_date, end_date, running_time, troupe } = req.body;
     const id = req.params.id;
     const exPlay = Play.findOne({ where: { id }});
-        //이미 존재하는 아이디인 경우
+        //이미 존재하는 연극인 경우
         if (exPlay){
             return res.status(409).json({
                 message: '이미 존재하는 연극정보 입니다.',
