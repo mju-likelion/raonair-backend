@@ -182,7 +182,6 @@ auth.post('/sign-in', async (req, res, next) => {
 
 //비밀번호 찾기
 //디비에 존재하는 이메일이면 메일로 비밀번호재설정하는 링크보내기 ㅇ
-//이메일을 req.body/params로 받아와야하는지 ?
 auth.post('/find-password/user/:userid', async (req, res, next) => {
     const { email } = req.body;
     const exUser = await User.findOne({ where: { email }});
@@ -192,39 +191,35 @@ auth.post('/find-password/user/:userid', async (req, res, next) => {
         });
     }
     //이메일 존재하면 비밀번호 변경 메일 발송
-    // async function main(email) { -> main 함수 없어도 코드 실행되는데 꼭 있어야하는건지 ? if문 때문에 else처리로 없어도 된다고 생각하긴하는데 노드메일러에서는 함수로 감쌌음
-        try {
-            const transporter = nodemailer.createTransport({
-                service: 'naver',
-                host: 'smtp.naver.com',
-                port: 587,
-                auth: {
-                user: process.env.MAIL_EMAIL,
-                pass: process.env.MAIL_PASSWORD
-                }
-            });
-            const emailSend = await transporter.sendMail({
-                from: "ypd06021@naver.com",     // 메일 발신 주소
-                to: email,                      //메일 수신 주소
-                subject: "라온에어 비밀번호 찾기",    // 제목
-                html: '<p>아래의 버튼을 클릭해주세요 !</p>' +
-                "<a href='http://localhost:8000/api/auth/reset-pw'>비밀번호 변경하기</a>" //비밀번호 변경 링크 보내기
-            });
+    try {
+        const transporter = nodemailer.createTransport({
+            service: 'naver',
+            host: 'smtp.naver.com',
+            port: 587,
+            auth: {
+            user: process.env.MAIL_EMAIL,
+            pass: process.env.MAIL_PASSWORD
+            }
+        });
+        const emailSend = await transporter.sendMail({
+            from: "ypd06021@naver.com",     // 메일 발신 주소
+            to: email,                      //메일 수신 주소
+            subject: "라온에어 비밀번호 찾기",    // 제목
+            html: '<p>아래의 버튼을 클릭해주세요 !</p>' +
+            "<a href='http://localhost:8000/api/auth/reset-pw'>비밀번호 변경하기</a>" //비밀번호 변경 링크 보내기
+        });
 
-            console.log("메일로 비밀번호 재설정 링크 보내기 성공");
-            return res.status(200).json({
-                message: '메일로 비밀번호 재설정 링크 보내기 성공',
-            });
-        } catch (error) {
-            console.log("올바르지 않은 이메일 주소입니다.");
-            return next(error);
-        }
-    // };
+        console.log("메일로 비밀번호 재설정 링크 보내기 성공");
+        return res.status(200).json({
+            message: '메일로 비밀번호 재설정 링크 보내기 성공',
+        });
+    } catch (error) {
+        console.log("올바르지 않은 이메일 주소입니다.");
+        return next(error);
+    }
 });
 
 //비밀번호 초기화
-//이메일이 일치하는 디비의 비밀번호 칸을 입력받아서 암호화한 비밀번호로 업데이트 ㅇ
-//이메일을 req.body/params로 받아와야하는지 ? 비밀번호를 입력받아야해서 post랑 req.body 사용해야하긴함
 auth.post('/reset-password', async (req, res, next) => {
     const { email, password } = req.body;
     try{
