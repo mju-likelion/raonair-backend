@@ -9,19 +9,13 @@ const { getMaxListeners } = require('process');
 const dotenv = require('dotenv');
 const { token } = require('morgan');
 const redis = require("redis");
-const emailsendhtml = require('../templates/emailsend')
-const redisClient = redis.createClient({
-    host : "127.0.0.1",
-    port : 6379,
-    db : 0,
-    // password:""
-});
+const redisClient = redis.createClient({ host : "127.0.0.1", port : 6379, db : 0 });
 
+// const emailsendhtml = require('../templates/emailsend')
 
 const auth = express.Router();
 
 //회원가입
-//이메일에 토큰 담긴 링크를 보내서 걔가 이메일 검증 라우터를 찌르도록.
 auth.post('/sign-up', async ( req, res, next ) => {
     const { name, nickname, email, password, emailConfirmed } = req.body;
     try{
@@ -181,7 +175,7 @@ auth.post('/sign-in', async (req, res, next) => {
 
 
 //비밀번호 찾기
-//디비에 존재하는 이메일이면 메일로 비밀번호재설정하는 링크보내기 ㅇ
+//디비에 존재하는 이메일이면 메일로 비밀번호재설정하는 링크보내기
 auth.post('/find-password/user/:userid', async (req, res, next) => {
     const { email } = req.body;
     const exUser = await User.findOne({ where: { email }});
