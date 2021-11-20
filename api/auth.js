@@ -145,8 +145,6 @@ auth.post('/sign-in', async (req, res, next) => {
     if (isEqualPw){
         // 토큰 발급
         try{
-            console.log(exUser.email);
-            console.log(exUser.nickname);
             const token = jwt.sign({
                 email: exUser.email,
                 nickname: exUser.nickname,
@@ -161,10 +159,6 @@ auth.post('/sign-in', async (req, res, next) => {
         }
         catch(error){
             console.error(error);
-            return res.status(500).json({
-                code: 500,
-                message: '서버에러',
-            })
         }
     }else{
         return res.status(404).json({

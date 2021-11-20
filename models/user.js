@@ -36,5 +36,10 @@ module.exports = class User extends Sequelize.Model {
             collate: 'utf8mb4_general_ci',
         });
     }
-    static associate(db){}
+    static associate(db){
+        db.User.hasMany(db.Star, { foreignKey: 'user', sourceKey: 'id' });
+        db.User.hasMany(db.Comment, { foreignKey: 'user', sourceKey: 'id' });
+        db.User.hasMany(db.Like, { foreignKey: 'user', sourceKey: 'id' })
+        db.User.hasMany(db.Troupe_like, { foreignKey: 'user', sourceKey: 'id' })
+    }
 };
