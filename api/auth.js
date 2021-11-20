@@ -54,10 +54,6 @@ auth.post('/sign-in', async (req, res, next) => {
         }
         catch(error){
             console.error(error);
-            return res.status(500).json({
-                code: 500,
-                message: '서버에러',
-            })
         }
     }else{
         return res.status(404).json({
