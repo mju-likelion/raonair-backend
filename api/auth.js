@@ -40,8 +40,6 @@ auth.post('/sign-in', async (req, res, next) => {
     if (isEqualPw){
         // 토큰 발급
         try{
-            console.log(exUser.email);
-            console.log(exUser.nickname);
             const token = jwt.sign({
                 email: exUser.email,
                 nickname: exUser.nickname,
