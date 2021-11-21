@@ -1097,6 +1097,11 @@ jsonfile@^4.0.0:
   optionalDependencies:
     graceful-fs "^4.1.6"
 
+jsonresponse@^0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/jsonresponse/-/jsonresponse-0.1.3.tgz#cdc80cc2c3c537e136a375b59ac644bfe42dd395"
+  integrity sha1-zcgMwsPFN+E2o3W1msZEv+Qt05U=
+
 jsonwebtoken@^8.5.1:
   version "8.5.1"
   resolved "https://registry.yarnpkg.com/jsonwebtoken/-/jsonwebtoken-8.5.1.tgz#00e71e0b8df54c2121a1f26137df2280673bcc0d"
