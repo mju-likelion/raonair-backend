@@ -3,11 +3,11 @@ const Troupe = require('../models/troupe');
 const troupes = express.Router();
 
 // 극단 조회
-troupes.get('/:troupeid', async(req, res, next) => {
+troupes.get('/:troupeId', async(req, res, next) => {
     try{
-        const { troupeid } = req.params;
+        const { troupeId } = req.params;
         const exTroupe = await Troupe.findOne({
-            where: {id: troupeid}
+            where: {id: troupeId}
         });
         res.json({
             name: exTroupe.name,
@@ -16,7 +16,7 @@ troupes.get('/:troupeid', async(req, res, next) => {
         });
     }
     catch(err){
-        err();
+        next(err);
     }
 })
 
@@ -40,6 +40,34 @@ troupes.post('/posting', async(req, res, next) => {
     }
 });
 
-// 수정 - 값이 오면 그걸로 바꿔줌
+// 극단 수정
+troupes.put('/:troupeId/updating', async(req, res, next) => {
+    try{
+        const { troupeId } = req.params;
+        const { name, type, logo} = req.body;
+        const exTroupe = await Troupe.findOne({
+            where: {id: troupeId}
+        });
+        if(exTroupe){
+            await Troupe.update(
+                {name, type, logo}, {where: {id: troupeId}}
+            );
+        }
+        else{
+            res.status(401);
+            return res.json({
+                message: 'no existing troupe',
+                status: 401
+            })
+        }
+        res.json({
+            message: 'success', 
+            status: 201
+        });
+    }
+    catch(err){
+        next(err);
+    }
+} )
 
 module.exports = troupes;
