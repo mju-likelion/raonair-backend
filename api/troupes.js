@@ -1,18 +1,26 @@
 const express = require('express');
 const Troupe = require('../models/troupe');
-
 const troupes = express.Router();
 
+// 극단 조회
+troupes.get('/:troupeid', async(req, res, next) => {
+    try{
+        const { troupeid } = req.params;
+        const exTroupe = await Troupe.findOne({
+            where: {id: troupeid}
+        });
+        res.json({
+            name: exTroupe.name,
+            type: exTroupe.type,
+            logo: exTroupe.logo
+        });
+    }
+    catch(err){
+        err();
+    }
+})
 
-// api/troupes/숫자
-troupes.get('/:id', (req, res, next) => {
-     res.send(req.params.id);
-    } 
-);
-
-// 조회
-
-// 추가
+// 극단 추가
 troupes.post('/posting', async(req, res, next) => {
     try{
         const { name, type, logo} = req.body;
@@ -21,7 +29,6 @@ troupes.post('/posting', async(req, res, next) => {
             type: type,
             logo: logo,
         });
-        
         res.status(201);
         res.json({
             message: 'success', 
