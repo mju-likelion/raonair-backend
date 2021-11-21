@@ -33,20 +33,13 @@ app.use((req, res, next) => {
     next(error);
 });
 
-// error middleware
-// app.use((err, req, res, next) => {
-//     res.locals.message = err.message;
-//     res.locals.error = process.env.NODE_ENV !== 'development' ? err : {};
-//     res.status(err.status || 500);
-//     res.send('error');
-// });
-
+//error middleware
 app.use((err, req, res, next) => {
     res.locals.message = err.message;
-    res.locals.error = process.env.NODE_DEV !== 'production' ? err : {};
+    res.locals.error = process.env.NODE_ENV !== 'development' ? err : {};
     res.status(err.status || 500);
     res.send(res.locals.message);
-})
+});
 
 app.listen(app.get('port'), () => {
     console.log(app.get('port'), '번 포트에서 대기중');
