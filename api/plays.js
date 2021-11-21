@@ -95,15 +95,11 @@ plays.post('/data', async (req, res, next) => {
 
 //연극 정보 조회(연극개별페)
 //req.body로 받아온 title로 조회
-plays.post('/read/:playid', async (req, res, next) => {
-    // const id = req.params.playid;
+plays.post('/read', async (req, res, next) => {
     const { title } = req.body;
 
     try {
-        console.log("try");
-
         const exPlay = await Play.findOne({ where: { title }});
-        // console.log(exPlay);
         if (!exPlay){
             return res.status(400).json({
                 message: '존재하지 않는 연극입니다.',
@@ -132,7 +128,6 @@ plays.post('/read/:playid', async (req, res, next) => {
 //연극 정보 수정
 //req.body의 title로 디비에 연극 존재 여부 확인, 수정
 plays.post('/update', async (req, res, next) => {
-    // const id = req.params.playid;
     const { title, price, running_time, troupe, location, poster, yes24_external_link, playDB_external_link, cultureGov_external_link } = req.body;
     const exPlay = await Play.findOne({ where: { title }});
         
@@ -145,7 +140,7 @@ plays.post('/update', async (req, res, next) => {
         }
         // 디비에 존재하면 수정
         await Play.update({
-            // title: title,
+            title: title,
             price: price,
             running_time: running_time,
             location: location,

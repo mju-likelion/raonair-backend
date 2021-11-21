@@ -6,7 +6,6 @@ module.exports = class Play extends Sequelize.Model{
             title: {
                 type: Sequelize.STRING(20),
                 allowNull: false,
-                unique: true,
             },
             location: {
                 type: Sequelize.ENUM('서울','경기','부산','광주','강원','인천','충청','전라','경상','제주'),
