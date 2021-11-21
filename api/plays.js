@@ -3,6 +3,7 @@ const express = require('express');
 const Play = require('../models/play');
 const Admin = require('../models/admin');
 const { title } = require('process');
+const { resourceLimits } = require('worker_threads');
 
 const plays = express.Router();
 const admins = express.Router();
@@ -92,32 +93,35 @@ plays.post('/data', async (req, res, next) => {
     });
 })
 
-//연극 정보 불러오기(연극개별페)
-//params로 받아온 id 값으로 
+//연극 정보 조회(연극개별페)
+//req.body로 받아온 title로 조회
 plays.post('/read/:playid', async (req, res, next) => {
     // const id = req.params.playid;
-    const title = req.body;
+    const { title } = req.body;
 
     try {
-        const exPlay = await Play.findOne({ where: { title }});
+        console.log("try");
 
+        const exPlay = await Play.findOne({ where: { title }});
+        // console.log(exPlay);
         if (!exPlay){
             return res.status(400).json({
                 message: '존재하지 않는 연극입니다.',
             });
         }
-        Play.findAll({
-            attributes: ['price', 'poster'],
+        const play = await Play.findOne({ where: {title},
+            attributes: ['price', 'poster', 'running_time', 'location', 'poster', 'yes24_external_link', 'playDB_external_link', 'cultureGov_external_link'],
         });
 
         return res.status(200).json({
-                price,
-                porster,
-                // running_time,
-                // location,
-                // yes24_external_link,
-                // playDB_external_link,
-                // cultureGov_external_link,
+            message: "조회성공",
+            price: play.price,
+            running_time: play.running_time,
+            location: play.location,
+            poster: play.poster,
+            yes24_external_link: play.yes24_external_link,
+            playDB_external_link: play.playDB_external_link,
+            cultureGov_external_link: play.cultureGov_external_link
         });
     }
     catch (error) {
