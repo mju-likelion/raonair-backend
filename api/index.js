@@ -16,7 +16,7 @@ api.use('/troupes', troupeRouter);
 api.use('/star', starRouter);
 api.use('/comment', commentRouter);
 api.use('/theater', theaterRouter);
-api.use('./person', personRouter);
-api.use('./role', roleRouter);
+api.use('/person', personRouter);
+api.use('/role', roleRouter);
 
 module.exports = api;

@@ -2,19 +2,19 @@ const express = require('express');
 const path = require('path');
 const morgan = require('morgan');
 const http = require('http');
+const dotenv = require('dotenv');
 
 const { sequelize, User } = require('./models');
 const user = require('./models/user');
-const { Router } = require('express');
-const app = express();
 const api = require('./api');
-const dotenv = require('dotenv');
+const app = express();
+
 
 app.set('port', process.env.PORT || 8000);
 
 sequelize.sync({ force: true })
     .then(() => {
-        console.log('데이터베이스 연결 성공');
+        console.log('디비연결완료 : app.js에서 시퀄라이즈로 연결');
     })
     .catch((err) => {
         console.log(err);
@@ -23,20 +23,8 @@ sequelize.sync({ force: true })
 app.use(morgan('dev'));
 dotenv.config();
 
-// app.get('/', (req, res, next) => {
-//     user.create({
-//         name: "fly",
-//         nickname: "yebin",
-//         email: "yebin@naver.com",
-//         password: "asdfasdf",
-//         emailConfirmed: "0",
-//     });
-//     console.log('입력 성공');
-// })
-
 app.use(express.json());
 app.use('/api', api);
-
 
 // 404 middleware
 app.use((req, res, next) => {

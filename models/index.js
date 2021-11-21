@@ -9,6 +9,7 @@ const Role = require('./role');
 const Person = require('./person');
 const Like = require('./like');
 const Troupe_like = require('./troupe_like');
+const Admin = require('./admin');
 
 const env = process.env.NODE_ENV || 'development';
 const config = require('../config/config.json')[env];
@@ -29,6 +30,7 @@ db.Role = Role;
 db.Person = Person;
 db.Like = Like;
 db.Troupe_like = Troupe_like;
+db.Admin = Admin;
 
 User.init(sequelize);
 Troupe.init(sequelize);
@@ -40,6 +42,7 @@ Role.init(sequelize);
 Person.init(sequelize);
 Like.init(sequelize);
 Troupe_like.init(sequelize);
+Admin.init(sequelize);
 
 User.associate(db);
 Troupe.associate(db);
@@ -51,5 +54,6 @@ Role.associate(db);
 Person.associate(db);
 Like.associate(db);
 Troupe_like.associate(db);
+Admin.associate(db);
 
 module.exports = db;
