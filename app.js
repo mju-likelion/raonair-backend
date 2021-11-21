@@ -12,7 +12,7 @@ const app = express();
 
 app.set('port', process.env.PORT || 8000);
 
-sequelize.sync({ force: false })
+sequelize.sync({ force: true })
     .then(() => {
         console.log('디비연결완료 : app.js에서 시퀄라이즈로 연결');
     })
