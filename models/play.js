@@ -13,49 +13,50 @@ module.exports = class Play extends Sequelize.Model{
             },
             poster: {
                 type: Sequelize.STRING(100),
-                allowNull: false,
+                // allowNull: false,
             },
-            start_date: {
-                type: Sequelize.DATE,
-                allowNull: false,
-            },
-            end_date: {
-                type: Sequelize.DATE,
-            },
+            // start_date: {
+            //     type: Sequelize.DATE,
+            //     allowNull: false,
+            // },
+            // end_date: {
+            //     type: Sequelize.DATE,
+            // },
             running_time: {
                 type: Sequelize.INTEGER,
-                allowNull: false,
+                // allowNull: false,
             },
             price: {
                 type: Sequelize.INTEGER,
-                allowNull: false, 
+                // allowNull: false, 
             },
             troupe: {
                 type: Sequelize.INTEGER,
-                allowNull: false,
+                // allowNull: false,
             },
             yes24_external_link: {
                 type: Sequelize.STRING(100),
-                unique: true,
+                // unique: true,
             },
             interpark_external_link: {
                 type: Sequelize.STRING(100),
-                unique: true,
+                // unique: true,
             },
             playDB_external_link: {
                 type: Sequelize.STRING(100),
-                unique: true,
+                // unique: true,
             },
             cultureGov_external_link: {
                 type: Sequelize.STRING(100),
-                unique: true,
+                // unique: true,
             },
         }, {
             sequelize,
             timestamps: false,
+            underscored: false,
+            paranoid: false,
             modelName: 'Play',
             tableName: 'plays',
-            paranoid: false,
             charset: 'utf8mb4',
             collate: 'utf8mb4_general_ci',
         });

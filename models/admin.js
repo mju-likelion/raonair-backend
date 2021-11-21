@@ -1,4 +1,5 @@
 const {Sequelize} = require("sequelize");
+const { truncate } = require("./play");
 
 module.exports = class Admin extends Sequelize.Model {
     static init(sequelize){
@@ -21,7 +22,7 @@ module.exports = class Admin extends Sequelize.Model {
             sequelize,
             timestamps: true,
             underscored: false,
-            paranoid: true,
+            paranoid: false,
             modelName: 'Admin',
             tableName: 'admins',
             charset: 'utf8mb4',
