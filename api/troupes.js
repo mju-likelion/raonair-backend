@@ -9,6 +9,7 @@ troupes.get('/:troupeId', async(req, res, next) => {
         const exTroupe = await Troupe.findOne({
             where: {id: troupeId}
         });
+        res.status(200);
         res.json({
             name: exTroupe.name,
             type: exTroupe.type,
