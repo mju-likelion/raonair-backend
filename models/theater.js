@@ -16,7 +16,7 @@ module.exports = class Theater extends Sequelize.Model {
             longitude: {
                 type: Sequelize.DOUBLE,
             },
-            latitiude: {
+            latitude: {
                 type: Sequelize.DOUBLE,
             },
         }, {
