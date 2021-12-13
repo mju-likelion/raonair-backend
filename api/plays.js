@@ -1,7 +1,7 @@
 const express = require('express');
-
 const Play = require('../models/play');
 const Admin = require('../models/admin');
+const Comment = require('../models/comment');
 const { title } = require('process');
 const { resourceLimits } = require('worker_threads');
 
@@ -157,6 +157,48 @@ plays.post('/update', async (req, res, next) => {
     }
     catch (error) {
         return next(error);
+    }
+});
+
+// 연극 댓글 페이징
+plays.get('/:id/comment/:page', async(req, res, next)=> {
+    try{
+        const playId = req.params.id;
+        const pageNum = req.params.page;
+        const commentLimit = 5 * pageNum;
+
+        const commentList = await Comment.findAll({
+            where: {play: playId}
+        });
+        
+        const newCommentList = [];
+
+        // 현재 페이지에서 보여줄 데이터의 갯수만큼
+        for (step = commentLimit-5 ; step < commentLimit; step++){
+            newCommentList.push(commentList[step]);
+        }
+
+        // limit 보다 적은 수의 데이터가 있거나, limit 다음 데이터가 없는 경우 '더 이상 표시할 데이터가 없습니다.'
+        // 만약 newCommentList에 null이 있는 경우 (더 이상 보여줄 데이터 없음) 존재하는 값들만 반환
+        if ((newCommentList.includes(undefined, 0) == true) || (commentList[commentLimit+1] == undefined)){
+            const resultComment = newCommentList.filter((element, i) => element != null);
+            res.json({
+                'data': resultComment,
+                message: 'success',
+                'next': '더이상 표시할 데이터가 없습니다.',
+                status: 201
+            });   
+        }else{ // 더 표시할 데이터가 있는 경우
+            res.json({
+                'data': newCommentList,
+                message: 'success',
+                'next' : '더 표시할 데이터가 있습니다.',
+                status: 201
+            });
+        }
+    }
+    catch(err){
+        next(err);
     }
 });
 
