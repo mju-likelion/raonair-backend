@@ -7,6 +7,7 @@ const commentRouter = require('./comment');
 const theaterRouter = require('./theater');
 const personRouter = require('./person');
 const roleRouter = require('./role');
+// const adminRouter = require('./admin');
 
 const api = express.Router();
 

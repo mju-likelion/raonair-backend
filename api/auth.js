@@ -1,5 +1,4 @@
 const express = require('express');
-const User  = require('../models/user');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
@@ -11,6 +10,7 @@ const { token } = require('morgan');
 const redis = require("redis");
 const redisClient = redis.createClient({ host : "127.0.0.1", port : 6379, db : 0 });
 
+const User  = require('../models/user');
 // const emailsendhtml = require('../templates/emailsend')
 
 const auth = express.Router();
@@ -70,12 +70,14 @@ auth.post('/sign-up', async ( req, res, next ) => {
                     subject: "라온에어 이메일 인증",    // 제목
                     // text: emailtoken,           // 텍스트 
                     // html: emailtoken,            // html로 토큰만 보내기
-                    html: emailsendhtml //html로 이메일인증 링크 보내기
+                    html:
+                    // emailsendhtml
+                    '<p>아래의 버튼을 클릭해주세요 !</p>' +
+                    "<a href='http://localhost:8000/api/auth/email-verify/"+ emailtoken +"'>인증하기</a>"  //html로 이메일인증 링크 보내기
                 });
                 return res.status(200).json({
                     message: '이메일 보내기 성공!'
                 });
-                console.log("5. 메일 보내기 성공");
             } catch (error) {
                 console.log("이메일인증실패");
             }
